@@ -1,6 +1,6 @@
 {
-	"files": [
-		"index.ts"
+	"include": [
+		"*.ts"
 	],
   "compilerOptions": {
 	"module": "es6",

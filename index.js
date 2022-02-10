@@ -10,11 +10,12 @@ function initialiseGraph() {
     for (var x = 0; x < 11; x++) {
         for (var y = 0; y < 11; y++) {
             var name = lookUp(x, y);
-            graph.addNode(name, { x: x, y: y, size: 10, label: "", color: 'grey', _node: new Node() });
+            graph.addNode(name, { x: x, y: y, size: 10, label: "", color: 'grey', _node: new Node(name, x, y, graph) });
         }
     }
 }
-function redStation(source) {
+function redStation(source, train) {
+    if (train === void 0) { train = false; }
     var x = randInt();
     var y = randInt();
     var name = lookUp(x, y);
@@ -24,6 +25,9 @@ function redStation(source) {
     }
     else {
         _node.addStation(new Station(name + '-station-red', 10, 0, 1, 'red'));
+    }
+    if (train) {
+        _node.newTrain();
     }
     graph.setNodeAttribute(name, 'color', 'red');
     return [x, y];
@@ -56,16 +60,16 @@ function createEdges(x, y, px, py) {
     }
     for (var i = 0; i < Math.abs(py - y); i++) {
         if (py < y) {
-            graph.addEdge(lookUp(px, py + i), lookUp(px, py + i + 1));
+            graph.addEdge(lookUp(x, py + i), lookUp(x, py + i + 1));
         }
         else {
-            graph.addEdge(lookUp(px, py - i), lookUp(px, py - i - 1));
+            graph.addEdge(lookUp(x, py - i), lookUp(x, py - i - 1));
         }
     }
 }
 initialiseGraph();
 var px, py, x, y;
-_a = redStation(true), px = _a[0], py = _a[1];
+_a = redStation(true, true), px = _a[0], py = _a[1];
 _b = redStation(true), x = _b[0], y = _b[1];
 createEdges(x, y, px, py);
 redStation(false);

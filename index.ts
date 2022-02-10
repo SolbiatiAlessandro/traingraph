@@ -2,6 +2,7 @@ import Graph from 'graphology';
 import Sigma from 'sigma';
 import Station from './Station';
 import Node from './Node';
+import Train from './Train';
 
 const container = document.getElementById("sigma-container") as HTMLElement;
 
@@ -13,12 +14,12 @@ function initialiseGraph(): void{
 	for(var x = 0; x < 11; x++){
 		for(var y = 0; y < 11; y ++){
 			var name: string = lookUp(x, y);
-			graph.addNode(name, {x, y, size: 10, label: "", color: 'grey', _node: new Node()});
+			graph.addNode(name, {x, y, size: 10, label: "", color: 'grey', _node: new Node(name, x, y, graph)});
 		}
 	}
 }
 
-function redStation(source: boolean): [number, number]{
+function redStation(source: boolean, train: boolean = false): [number, number]{
 	var x = randInt();
 	var y = randInt();
 	var name: string = lookUp(x,y);
@@ -27,6 +28,9 @@ function redStation(source: boolean): [number, number]{
 		_node.addStation(new Station(name+'-station-red', 10, 2, 0, 'red'));
 	} else {
 		_node.addStation(new Station(name+'-station-red', 10, 0, 1, 'red'));
+	}
+	if (train){
+		_node.newTrain();
 	}
 	graph.setNodeAttribute(name, 'color', 'red');
 	return [x, y];
@@ -69,7 +73,7 @@ function createEdges(x, y, px, py){
 initialiseGraph();
 
 var px, py, x, y;
-[px, py] = redStation(true);
+[px, py] = redStation(true, true);
 [x, y] = redStation(true);
 createEdges(x,y,px,py);
 redStation(false);

@@ -13,28 +13,55 @@ function initialiseGraph(): void{
 	for(var x = 0; x < 11; x++){
 		for(var y = 0; y < 11; y ++){
 			var name: string = lookUp(x, y);
-			graph.addNode(name, 
-						  new Node(x, y, { size: 10, label: name, color: 'grey' })
-						 );
+			graph.addNode(name, {x, y, size: 10, label: "", color: 'grey', _node: new Node()});
 		}
 	}
 }
 
-function redNode(x: number, y: number): void{
+function redStation(x: number, y: number, source: boolean): void{
 	var name: string = lookUp(x,y);
-	graph.updateNodeAttribute(name, 'trainNodes', ns => ns.push(new Station(10, 1, 1, 'red')));
+	var _node: Node  = graph.getNodeAttribute(name, '_node');
+	if (source){
+		_node.addStation(new Station(name+'-station-red', 10, 2, 0, 'red'));
+	} else {
+		_node.addStation(new Station(name+'-station-red', 10, 0, 1, 'red'));
+	}
 	graph.setNodeAttribute(name, 'color', 'red');
 }
 
+function blueStation(x: number, y: number, source: boolean): void{
+	var name: string = lookUp(x,y);
+	var _node: Node  = graph.getNodeAttribute(name, '_node');
+	if (source){
+		_node.addStation(new Station(name+'-station-red', 10, 2, 0, 'blue'));
+	} else {
+		_node.addStation(new Station(name+'-station-red', 10, 0, 1, 'blue'));
+	}
+	graph.setNodeAttribute(name, 'color', 'blue');
+}
+
+function randInt(): number { return Math.floor(Math.random() * 10); }
+
 
 initialiseGraph();
-//redNode(5, 6);
+redStation(randInt(), randInt(), true);
+redStation(randInt(), randInt(), true);
+redStation(randInt(), randInt(), false);
+blueStation(randInt(), randInt(), true);
+blueStation(randInt(), randInt(), true);
+blueStation(randInt(), randInt(), false);
 
 console.log(graph.order); //nodes
 console.log(graph.size); //edges
 
-graph.forEachNode(node => {
-	console.log(node);
-})
-
 const renderer = new Sigma(graph, container);
+
+// this is a fake game loop
+(<any>window).update = function update(){
+	graph.forEachNode((nodeKey, attributes) => {
+		var _node = attributes._node;
+		_node.update(0, 1000);
+		graph.setNodeAttribute(nodeKey, 'label', _node.getLabel());
+	})
+}.bind(graph);
+(<any>window).update();

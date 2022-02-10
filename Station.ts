@@ -1,6 +1,7 @@
 export default class Station {
 	// values are per ms
 	constructor(
+		public name: string,
 		protected stores: number,
 		protected sinks: number,
 		protected generates: number,
@@ -8,19 +9,16 @@ export default class Station {
 	){};
 	protected stored: number = 0;
 
-	getStorageCapacity(): number{
-		return this.stores;
-	}
-
-	getContentType(): string{
-		return this._type;
+	getState(): { stored: number, capacity: number, content: string }{
+		return { stored: this.stored, capacity: this.stores, content: this._type };
 	}
 
 	// delta: ms passed
 	// returns (generated, sinked) in this step
 	update(time: number, delta: number): [number, number]{
-		var generated = this.generates * delta;
-		var sinked = this.sinks * delta;
+		console.log(this.name + " update");
+		var generated = this.generates * (delta / 1000);
+		var sinked = this.sinks * (delta / 1000);
 		this.stored = Math.max(
 			0, 
 			Math.min(

@@ -1,6 +1,7 @@
 var Station = /** @class */ (function () {
     // values are per ms
-    function Station(stores, sinks, generates, _type) {
+    function Station(name, stores, sinks, generates, _type) {
+        this.name = name;
         this.stores = stores;
         this.sinks = sinks;
         this.generates = generates;
@@ -8,17 +9,15 @@ var Station = /** @class */ (function () {
         this.stored = 0;
     }
     ;
-    Station.prototype.getStorageCapacity = function () {
-        return this.stores;
-    };
-    Station.prototype.getContentType = function () {
-        return this._type;
+    Station.prototype.getState = function () {
+        return { stored: this.stored, capacity: this.stores, content: this._type };
     };
     // delta: ms passed
     // returns (generated, sinked) in this step
     Station.prototype.update = function (time, delta) {
-        var generated = this.generates * delta;
-        var sinked = this.sinks * delta;
+        console.log(this.name + " update");
+        var generated = this.generates * (delta / 1000);
+        var sinked = this.sinks * (delta / 1000);
         this.stored = Math.max(0, Math.min(this.stores, this.stored + generated - sinked));
         return [generated, sinked];
     };

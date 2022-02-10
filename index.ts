@@ -1,6 +1,7 @@
 import Graph from 'graphology';
 import Sigma from 'sigma';
 import Station from './Station';
+import Node from './Node';
 
 const container = document.getElementById("sigma-container") as HTMLElement;
 
@@ -12,10 +13,9 @@ function initialiseGraph(): void{
 	for(var x = 0; x < 11; x++){
 		for(var y = 0; y < 11; y ++){
 			var name: string = lookUp(x, y);
-			graph.addNode(name, { 
-				x: x, y: y, size: 10, label: name, color: "grey",
-				trainNodes: []
-			});
+			graph.addNode(name, 
+						  new Node(x, y, { size: 10, label: name, color: 'grey' })
+						 );
 		}
 	}
 }
@@ -28,7 +28,7 @@ function redNode(x: number, y: number): void{
 
 
 initialiseGraph();
-redNode(5, 6);
+//redNode(5, 6);
 
 console.log(graph.order); //nodes
 console.log(graph.size); //edges

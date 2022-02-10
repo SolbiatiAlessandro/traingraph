@@ -1,3 +1,4 @@
+var _a, _b;
 import Graph from 'graphology';
 import Sigma from 'sigma';
 import Station from './Station';
@@ -13,23 +14,64 @@ function initialiseGraph() {
         }
     }
 }
-function redStation(x, y) {
+function redStation(source) {
+    var x = randInt();
+    var y = randInt();
     var name = lookUp(x, y);
     var _node = graph.getNodeAttribute(name, '_node');
-    _node.addStation(new Station(name + '-station-red', 10, 2, 0, 'red'));
+    if (source) {
+        _node.addStation(new Station(name + '-station-red', 10, 2, 0, 'red'));
+    }
+    else {
+        _node.addStation(new Station(name + '-station-red', 10, 0, 1, 'red'));
+    }
     graph.setNodeAttribute(name, 'color', 'red');
+    return [x, y];
 }
-function blackStation(x, y) {
+function blueStation(source) {
+    var x = randInt();
+    var y = randInt();
     var name = lookUp(x, y);
     var _node = graph.getNodeAttribute(name, '_node');
-    _node.addStation(new Station(name + '-station-black', 10, 0, 1, 'black'));
-    graph.setNodeAttribute(name, 'color', 'black');
+    if (source) {
+        _node.addStation(new Station(name + '-station-red', 10, 2, 0, 'blue'));
+    }
+    else {
+        _node.addStation(new Station(name + '-station-red', 10, 0, 1, 'blue'));
+    }
+    graph.setNodeAttribute(name, 'color', 'blue');
+    return [x, y];
+}
+function randInt() { return Math.floor(Math.random() * 10); }
+//
+// fake UI
+function createEdges(x, y, px, py) {
+    for (var i = 0; i < Math.abs(px - x); i++) {
+        if (px < x) {
+            graph.addEdge(lookUp(px + i, py), lookUp(px + i + 1, py));
+        }
+        else {
+            graph.addEdge(lookUp(px - i, py), lookUp(px - i - 1, py));
+        }
+    }
+    for (var i = 0; i < Math.abs(py - y); i++) {
+        if (py < y) {
+            graph.addEdge(lookUp(px, py + i), lookUp(px, py + i + 1));
+        }
+        else {
+            graph.addEdge(lookUp(px, py - i), lookUp(px, py - i - 1));
+        }
+    }
 }
 initialiseGraph();
-redStation(5, 6);
-blackStation(2, 1);
-blackStation(3, 1);
-blackStation(5, 7);
+var px, py, x, y;
+_a = redStation(true), px = _a[0], py = _a[1];
+_b = redStation(true), x = _b[0], y = _b[1];
+createEdges(x, y, px, py);
+redStation(false);
+blueStation(true);
+blueStation(true);
+blueStation(false);
 console.log(graph.order); //nodes
 console.log(graph.size); //edges
 var renderer = new Sigma(graph, container);
@@ -41,3 +83,4 @@ window.update = function update() {
         graph.setNodeAttribute(nodeKey, 'label', _node.getLabel());
     });
 }.bind(graph);
+window.update();

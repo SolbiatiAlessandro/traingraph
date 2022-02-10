@@ -1,6 +1,7 @@
 var Station = /** @class */ (function () {
     // values are per ms
-    function Station(name, stores, sinks, generates, _type) {
+    function Station(name, stores, // protected doesn't break js, just breaks ts
+    sinks, generates, _type) {
         this.name = name;
         this.stores = stores;
         this.sinks = sinks;

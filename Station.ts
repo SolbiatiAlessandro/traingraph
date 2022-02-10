@@ -2,7 +2,7 @@ export default class Station {
 	// values are per ms
 	constructor(
 		public name: string,
-		protected stores: number,
+		protected stores: number, // protected doesn't break js, just breaks ts
 		protected sinks: number,
 		protected generates: number,
 		protected _type: string,

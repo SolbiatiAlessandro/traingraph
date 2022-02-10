@@ -18,7 +18,9 @@ function initialiseGraph(): void{
 	}
 }
 
-function redStation(x: number, y: number, source: boolean): void{
+function redStation(source: boolean): [number, number]{
+	var x = randInt();
+	var y = randInt();
 	var name: string = lookUp(x,y);
 	var _node: Node  = graph.getNodeAttribute(name, '_node');
 	if (source){
@@ -27,9 +29,12 @@ function redStation(x: number, y: number, source: boolean): void{
 		_node.addStation(new Station(name+'-station-red', 10, 0, 1, 'red'));
 	}
 	graph.setNodeAttribute(name, 'color', 'red');
+	return [x, y];
 }
 
-function blueStation(x: number, y: number, source: boolean): void{
+function blueStation(source: boolean): [number, number]{
+	var x = randInt();
+	var y = randInt();
 	var name: string = lookUp(x,y);
 	var _node: Node  = graph.getNodeAttribute(name, '_node');
 	if (source){
@@ -38,18 +43,39 @@ function blueStation(x: number, y: number, source: boolean): void{
 		_node.addStation(new Station(name+'-station-red', 10, 0, 1, 'blue'));
 	}
 	graph.setNodeAttribute(name, 'color', 'blue');
+	return [x, y];
 }
 
 function randInt(): number { return Math.floor(Math.random() * 10); }
-
+//
+// fake UI
+function createEdges(x, y, px, py){
+	for(var i = 0; i < Math.abs(px - x); i++){
+		if (px < x){
+			graph.addEdge(lookUp(px + i, py), lookUp(px + i + 1, py));
+		} else {
+			graph.addEdge(lookUp(px - i, py), lookUp(px - i - 1, py));
+		}
+	}
+	for(var i = 0; i < Math.abs(py - y); i++){
+		if (py < y){
+			graph.addEdge(lookUp(x, py + i), lookUp(x, py + i + 1));
+		} else {
+			graph.addEdge(lookUp(x, py - i), lookUp(x, py - i - 1));
+		}
+	}
+}
 
 initialiseGraph();
-redStation(randInt(), randInt(), true);
-redStation(randInt(), randInt(), true);
-redStation(randInt(), randInt(), false);
-blueStation(randInt(), randInt(), true);
-blueStation(randInt(), randInt(), true);
-blueStation(randInt(), randInt(), false);
+
+var px, py, x, y;
+[px, py] = redStation(true);
+[x, y] = redStation(true);
+createEdges(x,y,px,py);
+redStation(false);
+blueStation(true);
+blueStation(true);
+blueStation(false);
 
 console.log(graph.order); //nodes
 console.log(graph.size); //edges
